@@ -27,11 +27,11 @@ class Safe:
     def rotate_with_clicks(self, rotation: Rotation) -> int:
         if rotation.click_number == 0:
             return 0
-        start_position = self.position
-        self.position += rotation.rotate
         clicks = 0
-        if (start_position == 0) and (rotation.direction == "L"):
-            clicks -= 1
+        if (self.position == 0) and (rotation.direction == "L"):
+            clicks -= 1  # we already counted this (see below)
+        self.position += rotation.rotate
+
         while self.position < 0:
             self.position += self.max_position + 1
             clicks += 1
@@ -39,7 +39,7 @@ class Safe:
             self.position -= self.max_position + 1
             clicks += 1
         if (self.position == 0) and (rotation.direction == "L"):
-            clicks += 1
+            clicks += 1  # we count it when we end on it without going across 0-99
         return clicks
 
 
