@@ -37,7 +37,7 @@ class Safe:
 
     def rotate(self, rotation: Rotation):
         self.position += rotation.rotate
-        if self.position < 0:
+        while self.position < 0:
             self.position += self.max_position + 1
         while self.position > self.max_position:
             self.position -= self.max_position + 1
