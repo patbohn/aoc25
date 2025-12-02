@@ -35,34 +35,42 @@ class Safe:
         self.max_position = max_position
         self.position = start_position
 
-    def rotate(self, rotation: Rotation):
+    def rotate_with_clicks(self, rotation: Rotation) -> int:
+        if rotation.click_number == 0:
+            return 0
+        start_position = self.position
         self.position += rotation.rotate
+        clicks = 0
+        if (start_position == 0) and (rotation.direction == "L"):
+            clicks -= 1
         while self.position < 0:
             self.position += self.max_position + 1
+            clicks += 1
         while self.position > self.max_position:
             self.position -= self.max_position + 1
+            clicks += 1
+        if (self.position == 0) and (rotation.direction == "L"):
+            clicks += 1
+        return clicks
 
 
 def parse_input(text: list[str]) -> list[Rotation]:
     return [Rotation(line.strip()) for line in text if len(line) > 1]
 
 
-def process_input(test_input: str):
+def process_input(test_input: list[str]):
     rotations = parse_input(test_input)
     safe = Safe(start_position=50, max_position=99)
-    num_zeros = 0
+    zero_clicks = 0
     for rotation in rotations:
-        safe.rotate(rotation)
+        zero_clicks += safe.rotate_with_clicks(rotation)
         # print(
         #     f"Safe is at position {safe.position} after rotating with {rotation.rotate}"
         # )
-        if safe.position == 0:
-            num_zeros += 1
-    return num_zeros
+    return zero_clicks
 
 
 if __name__ == "__main__":
     with open("input.txt", "r") as input:
         result = process_input(input.readlines())
         print(f"The result is {result}")
-    # assert process_input(test_input) == 3
